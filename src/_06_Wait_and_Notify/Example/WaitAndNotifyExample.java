@@ -25,6 +25,8 @@ public class WaitAndNotifyExample {
 		s1.start();
 		s2.start();
 		
+		
+		
 		try {
 			s1.join();
 			s2.join();
