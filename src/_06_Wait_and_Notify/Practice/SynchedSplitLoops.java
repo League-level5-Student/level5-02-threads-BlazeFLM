@@ -22,8 +22,8 @@ public class SynchedSplitLoops {
 	public static void main(String[] args) {
 
 		Thread t1 = new Thread(() -> {
-			synchronized (threadLock) {
-				for (int i = 0; i < 100000; i++) {
+			for (int i = 0; i < 100000; i++) {
+				synchronized (threadLock) {
 					counter++;
 					threadLock.notify();
 					try {
@@ -38,16 +38,23 @@ public class SynchedSplitLoops {
 		});
 
 		Thread t2 = new Thread(() -> {
-			synchronized (threadLock) {
-				for (int i = 0; i < 100000; i++) {
+			for (int i = 0; i < 100001; i++) {
+				synchronized (threadLock) {
 					System.out.println(counter);
+					threadLock.notify();
+					try {
+						threadLock.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				threadLock.notify();
+				
 			}
 		});
 
-		t1.start();
 		t2.start();
+		t1.start();
 
 		try {
 			t1.join();
